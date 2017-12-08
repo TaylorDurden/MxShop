@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.users.apps.UsersConfig',
+    # 'apps.users.apps.UsersConfig',
     'DjangoUeditor',
+    'users',
     'goods.apps.GoodsConfig',
     'trade.apps.TradeConfig',
     'user_operation.apps.UserOperationConfig',
@@ -139,6 +140,9 @@ USE_L10N = True
 
 USE_TZ = False # 默认是True, 时间是utc时间，由于我们要用本地时间，所以用手动修改为false
 
+AUTHENTICATION_BACKENDS = {
+    'users.views.CustomBackend',
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -162,3 +166,15 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
 }
+
+import datetime
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_AUTH_HEADER_PREFIX': 'JWT',
+}
+
+# 手机号码验证正则表达式
+REGEX_MOBILE = "^1[358]\d{9}$|^147\d{8}$|^176\d{8}$"
+
+# 云片网api key
+SMS_API_KEY = "8e6b011ff0f976d8512aa57425bac1e7"

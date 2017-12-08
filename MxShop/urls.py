@@ -29,6 +29,7 @@ from django.views.static import serve
 # 处理静态图片 end
 
 from goods.views import GoodsListViewSet, GoodsCategoryViewSet
+from users.views import SmsCodeViewSet
 
 
 router = DefaultRouter()
@@ -37,6 +38,12 @@ router.register(r'goods', GoodsListViewSet, base_name="goods")
 
 # 配置goods categories的url
 router.register(r'categories', GoodsCategoryViewSet, base_name="categories")
+
+# 注册发送短信url
+router.register(r'codes', SmsCodeViewSet, base_name="codes")
+
+
+# router.register(r'hotsearchs', , base_name="categories")
 
 # goods_list = GoodsListViewSet.as_view({
 #     'get': 'list',
@@ -60,5 +67,5 @@ urlpatterns = [
     url(r'^api-token-auth/', views.obtain_auth_token),
 
     # django jwt 认证模式
-    url(r'^jwt-auth/', obtain_jwt_token),
+    url(r'^login/', obtain_jwt_token),
 ]

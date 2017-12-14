@@ -29,7 +29,7 @@ from django.views.static import serve
 # 处理静态图片 end
 
 from goods.views import GoodsListViewSet, GoodsCategoryViewSet
-from users.views import SmsCodeViewSet
+from users.views import SmsCodeViewSet, UserViewSet
 
 
 router = DefaultRouter()
@@ -41,6 +41,9 @@ router.register(r'categories', GoodsCategoryViewSet, base_name="categories")
 
 # 注册发送短信url
 router.register(r'codes', SmsCodeViewSet, base_name="codes")
+
+#
+router.register(r'users', UserViewSet, base_name="users")
 
 
 # router.register(r'hotsearchs', , base_name="categories")

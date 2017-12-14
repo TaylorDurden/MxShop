@@ -12,7 +12,7 @@ from rest_framework import viewsets, status
 from rest_framework.mixins import CreateModelMixin
 
 
-from .serializers import SMSSerializer
+from .serializers import SMSSerializer, UserRegisterSerializer
 from .models import VerifyCode
 from utils.yunpian import YunPian
 from MxShop.settings import SMS_API_KEY
@@ -75,3 +75,5 @@ class UserViewSet(CreateModelMixin, viewsets.GenericViewSet):
     """
     用户
     """
+    serializer_class = UserRegisterSerializer
+    queryset = User.objects.all()

@@ -40,6 +40,15 @@ class SMSSerializer(serializers.Serializer):
         return mobile
 
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    用户详情序列化类
+    """
+    class Meta:
+        model = User
+        fields = ("name", "gender", "birthday", "email", "mobile")
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     code = serializers.CharField(required=True,
                                  max_length=4,
@@ -53,8 +62,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                                  help_text=u"验证码",
                                  write_only=True,
                                  label=u"验证码")
-    username = serializers.CharField(label=u"用户名", required=True, allow_blank=False, validators=[UniqueValidator(queryset=User.objects.all(), message=u"用户名已存在")])
-    password = serializers.CharField(write_only=True, label=u"密码", style={'input_type': 'password'})
+    username = serializers.CharField(label=u"用户名", help_text=u"用户名", required=True, allow_blank=False, validators=[UniqueValidator(queryset=User.objects.all(), message=u"用户名已存在")])
+    password = serializers.CharField(write_only=True, help_text=u"密码", label=u"密码", style={'input_type': 'password'})
 
     # 在新增用户时，将密码字段进行加密, 可以用来自定义创建，这里可以使用signals文件里的信号量创建来代替
     def create(self, validated_data):

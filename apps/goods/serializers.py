@@ -5,7 +5,7 @@ __author__ = 'taylor lee'
 from rest_framework import serializers
 
 
-from goods.models import Goods, GoodsCategory
+from goods.models import Goods, GoodsCategory, GoodsImage
 
 
 class GoodsCategorySerializer3(serializers.ModelSerializer):
@@ -29,8 +29,15 @@ class GoodsCategorySerializer(serializers.ModelSerializer):
         fields = '__all__' # 取所有字段
 
 
+class GoodsImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoodsImage
+        fields = ("image",)
+
+
 class GoodsSerializer(serializers.ModelSerializer):
     category = GoodsCategorySerializer()
+    images = GoodsImageSerializer(many=True)
     class Meta:
         model = Goods
         fields = '__all__' # 取所有字段

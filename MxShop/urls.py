@@ -30,6 +30,7 @@ from django.views.static import serve
 
 from goods.views import GoodsListViewSet, GoodsCategoryViewSet
 from users.views import SmsCodeViewSet, UserViewSet
+from user_operation.views import UserFavViewSet, LeavingMessageViewSet, AddressViewSet
 
 
 router = DefaultRouter()
@@ -44,6 +45,15 @@ router.register(r'codes', SmsCodeViewSet, base_name="codes")
 
 #
 router.register(r'users', UserViewSet, base_name="users")
+
+# 收藏
+router.register(r'userfavs', UserFavViewSet, base_name="userfavs")
+
+# 用户留言
+router.register(r'messages', LeavingMessageViewSet, base_name="messages")
+
+# 用户收货地址
+router.register(r'address', AddressViewSet, base_name="address")
 
 
 # router.register(r'hotsearchs', , base_name="categories")

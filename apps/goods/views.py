@@ -21,9 +21,9 @@ class GoodsPagination(PageNumberPagination):
     page_query_param = "page"
     max_page_size = 100
 
-class GoodsListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class GoodsListViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
-    商品列表页，分页，搜索，过滤，排序
+    商品列表页，单个商品详情，分页，搜索，过滤，排序
     """
     # 在for循环遍历的时候才会查询
     queryset = Goods.objects.all()
@@ -60,6 +60,8 @@ class GoodsCategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, vie
     """
     list:
         商品分类列表数据
+    retrieve:
+        获取商品分类详情
     """
     queryset = GoodsCategory.objects.filter(category_type=1) # 取第一级的分类
     serializer_class = GoodsCategorySerializer

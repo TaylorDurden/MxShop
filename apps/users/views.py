@@ -8,11 +8,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins, permissions, authentication
 from rest_framework.mixins import CreateModelMixin
+from rest_framework_jwt.serializers import jwt_encode_handler, jwt_payload_handler
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
-from .serializers import SMSSerializer, UserRegisterSerializer
+from .serializers import SMSSerializer, UserRegisterSerializer, UserDetailSerializer
 from .models import VerifyCode
 from utils.yunpian import YunPian
 from MxShop.settings import SMS_API_KEY
@@ -71,9 +73,52 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
             }, status=status.HTTP_201_CREATED)
 
 
-class UserViewSet(CreateModelMixin, viewsets.GenericViewSet):
+class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     用户
     """
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
+    authentication_classes = (JSONWebTokenAuthentication, authentication.SessionAuthentication)
+
+    # permission_classes = (permissions.IsAuthenticated, )
+
+    # 动态定义serializer
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return UserDetailSerializer
+        elif self.action == "create":
+            return UserRegisterSerializer
+
+        # 其他情况默认返回Detail
+        return UserDetailSerializer
+
+    # 动态定义permission
+    def get_permissions(self):
+        if self.action == "retrieve":
+            return [permissions.IsAuthenticated()]
+        elif self.action == "create":
+            return []
+
+        return []
+
+    # 重写CreateModelMixin的create方法
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.perform_create(serializer)
+        re_dict = serializer.data
+        payload = jwt_payload_handler(user)
+        re_dict["token"] = jwt_encode_handler(payload)
+        re_dict["name"] = user.name if user.name else user.username
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(re_dict, status=status.HTTP_201_CREATED, headers=headers)
+
+    # 重写CreateModelMixin的perform_create方法
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    # 重写GenericView的get_object方法来取user, 包含了d字段
+    def get_object(self):
+        return self.request.user

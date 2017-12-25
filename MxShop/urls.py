@@ -31,6 +31,7 @@ from django.views.static import serve
 from goods.views import GoodsListViewSet, GoodsCategoryViewSet
 from users.views import SmsCodeViewSet, UserViewSet
 from user_operation.views import UserFavViewSet, LeavingMessageViewSet, AddressViewSet
+from trade.views import ShoppingCartViewSet
 
 
 router = DefaultRouter()
@@ -54,6 +55,9 @@ router.register(r'messages', LeavingMessageViewSet, base_name="messages")
 
 # 用户收货地址
 router.register(r'address', AddressViewSet, base_name="address")
+
+# 用户购物车url
+router.register(r'shopcarts', ShoppingCartViewSet, base_name="shopcarts")
 
 
 # router.register(r'hotsearchs', , base_name="categories")
